@@ -1,18 +1,20 @@
 package com.mkalachova.trelloclone
 
-import android.content.Intent
+
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.activity_intro.*
+import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
-
-class IntroActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_intro)
+        setContentView(R.layout.activity_sign_in)
+
+        setupActionBar()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -24,13 +26,18 @@ class IntroActivity : AppCompatActivity() {
                 )
             }
         }
+    }
 
-        btn_sign_up_intro.setOnClickListener {
-            startActivity(Intent(this, SignUpActivity::class.java))
+    private fun setupActionBar() {
+        setSupportActionBar(toolbar_sign_in_activity)
+
+        val actionBar = supportActionBar
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
-
-        btn_sign_in_intro.setOnClickListener {
-            startActivity(Intent(this, SignInActivity::class.java))
+        toolbar_sign_in_activity.setNavigationOnClickListener {
+            onBackPressed()
         }
     }
 }
