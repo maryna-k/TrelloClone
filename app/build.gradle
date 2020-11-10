@@ -2,13 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "../ktlint.gradle"
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.trelloclone"
+        applicationId "com.mkalachova.trelloclone"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -32,6 +33,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'com.google.android.material:material:1.2.1'
+    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
