@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import models.User
 import timber.log.Timber
 
 class SignInActivity : BaseActivity() {
@@ -74,6 +75,12 @@ class SignInActivity : BaseActivity() {
                         Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    fun signInSuccesss(user: User) {
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     fun validateForm(email: String, password: String) : Boolean {
