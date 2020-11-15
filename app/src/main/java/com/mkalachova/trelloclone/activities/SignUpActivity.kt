@@ -9,7 +9,9 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.mkalachova.trelloclone.R
+import firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import models.User
 
 class SignUpActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,24 +60,23 @@ class SignUpActivity : BaseActivity() {
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                hideProgressDialog()
 
                 if (task.isSuccessful) {
                     val firebaseUser: FirebaseUser = task.result!!.user!!
-                    val registeredEmail = firebaseUser.email
-                    Toast.makeText(
-                        this,
-                        "Registered user: $name, $registeredEmail",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    FirebaseAuth.getInstance().signOut()
+                    val registeredEmail = firebaseUser.email!!
+                    val user = User(firebaseUser.uid, name, registeredEmail)
+                    FirestoreClass().registerUser(this, user)
+                    hideProgressDialog()
                     finish()
                 } else {
                     if(task.exception!!.message!!.isNullOrEmpty()) {
                         showErrorSnackBar(
                             getResources().getString(R.string.registration_failed)
                         )
-                    } else showErrorSnackBar(task.exception!!.message!!)
+                    } else {
+                        showErrorSnackBar(task.exception!!.message!!)
+                    }
+                    hideProgressDialog()
                 }
             }
     }
@@ -98,5 +99,13 @@ class SignUpActivity : BaseActivity() {
                 true
             }
         }
+    }
+
+    fun userRegisteredSuccess() {
+        Toast.makeText(
+            this,
+            "Registered user",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
