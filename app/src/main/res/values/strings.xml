@@ -18,4 +18,7 @@
     <string name="registration_failed">Registration failed. Please, try again</string>
     <string name="nav_my_profile">My Profile</string>
     <string name="nav_sign_out">Sign Out</string>
+    <string name="mobile">Mobile</string>
+    <string name="update">UPDATE</string>
+    <string name="my_profile_title">My Profile</string>
 </resources>

@@ -1,10 +1,13 @@
 package firebase
 
 import android.app.Activity
+import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.mkalachova.trelloclone.activities.MainActivity
+import com.mkalachova.trelloclone.activities.MyProfileActivity
 import com.mkalachova.trelloclone.activities.SignInActivity
 import com.mkalachova.trelloclone.activities.SignUpActivity
 import models.User
@@ -27,7 +30,22 @@ class FirestoreClass {
             }
     }
 
-    fun singInUser(activity: Activity) {
+    fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
+        mFirestore.collection(Constants.USERS)
+            .document(getCurrentUserId())
+            .update(userHashMap)
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "Profile Data updated successfully")
+                Toast.makeText(activity, "Profile updated", Toast.LENGTH_SHORT).show()
+                activity.profileUpdateSuccess()
+            }.addOnFailureListener {
+                exception ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error updating profile", exception)
+            }
+    }
+
+    fun loadUserData(activity: Activity) {
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
@@ -41,6 +59,9 @@ class FirestoreClass {
                         }
                         is MainActivity -> {
                             activity.updateNavigationUserDetails(loggedInUser)
+                        }
+                        is MyProfileActivity -> {
+                            activity.setUserDataInUI(loggedInUser)
                         }
                     }
                 }

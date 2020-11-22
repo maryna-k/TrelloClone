@@ -1,9 +1,10 @@
 package com.mkalachova.trelloclone.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -17,6 +18,10 @@ import models.User
 
 class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
+    companion object {
+        const val MY_PROFILE_REQIEST_CODE: Int = 11
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,7 +30,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        FirestoreClass().singInUser(this)
+        FirestoreClass().loadUserData(this)
     }
 
     private fun setupActionBar() {
@@ -55,11 +60,21 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQIEST_CODE) {
+            FirestoreClass().loadUserData(this)
+        } else {
+            Log.e("onActivityResult", "Cancelled")
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.nav_my_profile -> {
-                Toast.makeText(this@MainActivity, "My Profile", Toast.LENGTH_SHORT)
-                    .show()
+                startActivityForResult(Intent(this, MyProfileActivity::class.java),
+                    MY_PROFILE_REQIEST_CODE)
             }
             R.id.nav_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
@@ -76,7 +91,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
     fun updateNavigationUserDetails(user: User) {
         Glide
             .with(this)
-            .load(user.imageLocation)
+            .load(user.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
             .into(iv_user_image)
