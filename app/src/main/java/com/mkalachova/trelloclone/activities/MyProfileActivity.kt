@@ -6,9 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,11 +21,6 @@ import utils.Constants
 import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
-
-    companion object {
-        private const val READ_STORAGE_PERMISSION_CODE = 1
-        private const val PICK_IMAGE_REQUEST_CODE = 2
-    }
 
     private var mSelectedImageFileUri: Uri? = null
     private var mProfileImageUrl: String = ""
@@ -45,12 +38,12 @@ class MyProfileActivity : BaseActivity() {
             if(ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                showImageChooser()
+                Constants.showImageChooser(this)
             } else {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    READ_STORAGE_PERMISSION_CODE
+                    Constants.READ_STORAGE_PERMISSION_CODE
                 )
             }
         }
@@ -71,7 +64,7 @@ class MyProfileActivity : BaseActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == READ_STORAGE_PERMISSION_CODE) {
+        if(requestCode == Constants.READ_STORAGE_PERMISSION_CODE) {
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             } else {
@@ -86,7 +79,7 @@ class MyProfileActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK &&
-            requestCode == PICK_IMAGE_REQUEST_CODE &&
+            requestCode == Constants.PICK_IMAGE_REQUEST_CODE &&
             data!!.data != null) {
             mSelectedImageFileUri = data.data
 
@@ -101,11 +94,6 @@ class MyProfileActivity : BaseActivity() {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun showImageChooser() {
-        var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
     }
 
     private fun setupActionBar() {
@@ -139,11 +127,6 @@ class MyProfileActivity : BaseActivity() {
         }
     }
 
-    private fun getFileExtension(uri: Uri?): String? {
-        return MimeTypeMap.getSingleton()
-            .getExtensionFromMimeType(contentResolver.getType(uri!!))
-    }
-
     private fun updateUserProfileData() {
         val userHashMap = HashMap<String, Any>()
         var changesMade = false
@@ -174,7 +157,7 @@ class MyProfileActivity : BaseActivity() {
                 "USER_IMAGE" +
                         System.currentTimeMillis() +
                         "." +
-                        getFileExtension(mSelectedImageFileUri)
+                        Constants.getFileExtension(this, mSelectedImageFileUri)
             )
             storageRef.putFile(mSelectedImageFileUri!!).addOnSuccessListener {
                 taskSnapshot ->

@@ -6,10 +6,8 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.mkalachova.trelloclone.activities.MainActivity
-import com.mkalachova.trelloclone.activities.MyProfileActivity
-import com.mkalachova.trelloclone.activities.SignInActivity
-import com.mkalachova.trelloclone.activities.SignUpActivity
+import com.mkalachova.trelloclone.activities.*
+import models.Board
 import models.User
 import timber.log.Timber
 import utils.Constants
@@ -86,5 +84,21 @@ class FirestoreClass {
             currentUserId = currentUser.uid
         }
         return currentUserId
+    }
+
+    fun createBoard(activity: CreateBoardActivity, boardInfo: Board) {
+        mFirestore.collection(Constants.BOARDS)
+            .document()
+            .set(boardInfo, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "Board created successfully")
+                Toast.makeText(activity, "Board created successfully", Toast.LENGTH_SHORT)
+                    .show()
+                activity.boardCreatedSuccessfully()
+            }.addOnFailureListener {
+                    e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+            }
     }
 }

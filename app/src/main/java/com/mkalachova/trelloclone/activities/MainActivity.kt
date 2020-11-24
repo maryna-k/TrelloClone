@@ -15,12 +15,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import models.User
+import utils.Constants
 
 class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
     companion object {
         const val MY_PROFILE_REQIEST_CODE: Int = 11
     }
+
+    private lateinit var userName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,12 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         nav_view.setNavigationItemSelectedListener(this)
 
         FirestoreClass().loadUserData(this)
+
+        fab_create_board.setOnClickListener {
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            intent.putExtra(Constants.NAME, userName)
+            startActivity(intent)
+        }
     }
 
     private fun setupActionBar() {
@@ -89,6 +98,8 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
     }
 
     fun updateNavigationUserDetails(user: User) {
+        userName = user.name
+
         Glide
             .with(this)
             .load(user.image)
