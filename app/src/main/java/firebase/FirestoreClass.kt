@@ -43,7 +43,7 @@ class FirestoreClass {
             }
     }
 
-    fun loadUserData(activity: Activity) {
+    fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
@@ -56,7 +56,7 @@ class FirestoreClass {
                             activity.signInSuccesss(loggedInUser)
                         }
                         is MainActivity -> {
-                            activity.updateNavigationUserDetails(loggedInUser)
+                            activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
                         }
                         is MyProfileActivity -> {
                             activity.setUserDataInUI(loggedInUser)
@@ -86,6 +86,29 @@ class FirestoreClass {
         return currentUserId
     }
 
+    fun getBoardsList(activity: MainActivity) {
+        mFirestore.collection(Constants.BOARDS)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
+            .get()
+            .addOnSuccessListener {
+                document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+                val boardList: ArrayList<Board> = ArrayList()
+                for(i in document.documents) {
+                    var board = i.toObject(Board::class.java)!!
+                    board.documentId = i.id
+                    boardList.add(board)
+                }
+
+                activity.populateBoardsListToUI(boardList)
+                activity.hideProgressDialog()
+            }.addOnFailureListener {
+                e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
+            }
+    }
+
     fun createBoard(activity: CreateBoardActivity, boardInfo: Board) {
         mFirestore.collection(Constants.BOARDS)
             .document()
@@ -99,6 +122,23 @@ class FirestoreClass {
                     e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+            }
+    }
+
+    fun getBoardDetails(activity: TaskListActivity, boardDocumentId: String) {
+        mFirestore.collection(Constants.BOARDS)
+            .document(boardDocumentId)
+            .get()
+            .addOnSuccessListener {
+                    document ->
+                Log.i(activity.javaClass.simpleName, document.toString())
+
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+
+            }.addOnFailureListener {
+                    e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
             }
     }
 }
