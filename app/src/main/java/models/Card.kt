@@ -4,8 +4,8 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Task (
-    var title: String = "",
+data class Card (
+    val name: String = "",
     val createdBy: String = "",
-    val cards: ArrayList<Card> = ArrayList()
+    val assignedTo: ArrayList<String> = ArrayList()
 ): Parcelable

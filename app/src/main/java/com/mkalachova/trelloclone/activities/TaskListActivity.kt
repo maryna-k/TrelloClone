@@ -7,6 +7,7 @@ import com.mkalachova.trelloclone.R
 import firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_task_list.*
 import models.Board
+import models.Card
 import models.Task
 import utils.Constants
 
@@ -74,6 +75,45 @@ class TaskListActivity : BaseActivity() {
 
         showProgressDialog(resources.getString(R.string.please_wait))
 
+        FirestoreClass().addUpdateTaskList(this, boardDetails)
+    }
+
+    fun updateTaskList(position: Int, listName: String, model: Task) {
+        val task = Task(listName, model.createdBy)
+        boardDetails.taskList[position] = task
+        boardDetails.taskList.removeAt(boardDetails.taskList.size - 1)
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, boardDetails)
+    }
+
+    fun deleteTaskList(position: Int) {
+        boardDetails.taskList.removeAt(position)
+        boardDetails.taskList.removeAt(boardDetails.taskList.size - 1)
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, boardDetails)
+    }
+
+    fun addCardToTaskList(position: Int, cardName: String) {
+        boardDetails.taskList.removeAt(boardDetails.taskList.size - 1)
+
+        val cardAssignedUsersList: ArrayList<String> = ArrayList()
+        cardAssignedUsersList.add(FirestoreClass().getCurrentUserId())
+
+        val card = Card(cardName, FirestoreClass().getCurrentUserId(), cardAssignedUsersList)
+        val cardsList = boardDetails.taskList[position].cards
+        cardsList.add(card)
+
+        val task = Task(
+            boardDetails.taskList[position].title,
+            boardDetails.taskList[position].createdBy,
+            cardsList
+        )
+
+        boardDetails.taskList[position] = task
+
+        showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, boardDetails)
     }
 }
