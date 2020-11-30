@@ -15,7 +15,8 @@ import com.mkalachova.trelloclone.activities.TaskListActivity
 import kotlinx.android.synthetic.main.item_task.view.*
 import models.Task
 
-open class TaskListAdapter(private val context: Context, private var list: ArrayList<Task>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class TaskListAdapter(private val context: Context, private var list: ArrayList<Task>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context)

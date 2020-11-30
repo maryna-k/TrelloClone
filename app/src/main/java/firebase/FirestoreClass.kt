@@ -22,8 +22,7 @@ class FirestoreClass {
             .set(userInfo, SetOptions.merge())
             .addOnSuccessListener {
                 activity.userRegisteredSuccess()
-            }.addOnFailureListener {
-                e ->
+            }.addOnFailureListener { e ->
                 Timber.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
             }
     }
@@ -36,10 +35,9 @@ class FirestoreClass {
                 Log.e(activity.javaClass.simpleName, "Profile Data updated successfully")
                 Toast.makeText(activity, "Profile updated", Toast.LENGTH_SHORT).show()
                 activity.profileUpdateSuccess()
-            }.addOnFailureListener {
-                exception ->
+            }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Error updating profile", exception)
+                Log.e(activity.javaClass.simpleName, "Error updating profile", e)
             }
     }
 
@@ -63,8 +61,7 @@ class FirestoreClass {
                         }
                     }
                 }
-            }.addOnFailureListener {
-                    e ->
+            }.addOnFailureListener { e ->
                 when(activity) {
                     is SignInActivity ->{
                         activity.hideProgressDialog()
@@ -90,8 +87,7 @@ class FirestoreClass {
         mFirestore.collection(Constants.BOARDS)
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
             .get()
-            .addOnSuccessListener {
-                document ->
+            .addOnSuccessListener { document ->
                 Log.i(activity.javaClass.simpleName, document.documents.toString())
                 val boardList: ArrayList<Board> = ArrayList()
                 for(i in document.documents) {
@@ -102,8 +98,7 @@ class FirestoreClass {
 
                 activity.populateBoardsListToUI(boardList)
                 activity.hideProgressDialog()
-            }.addOnFailureListener {
-                e ->
+            }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
             }
@@ -118,8 +113,7 @@ class FirestoreClass {
                 Toast.makeText(activity, "Board created successfully", Toast.LENGTH_SHORT)
                     .show()
                 activity.boardCreatedSuccessfully()
-            }.addOnFailureListener {
-                    e ->
+            }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
             }
@@ -129,16 +123,14 @@ class FirestoreClass {
         mFirestore.collection(Constants.BOARDS)
             .document(boardDocumentId)
             .get()
-            .addOnSuccessListener {
-                    document ->
+            .addOnSuccessListener { document ->
                 Log.i(activity.javaClass.simpleName, document.toString())
 
                 val board = document.toObject(Board::class.java)!!
                 board.documentId = document.id
                 activity.boardDetails(board)
 
-            }.addOnFailureListener {
-                    e ->
+            }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
             }
@@ -155,10 +147,66 @@ class FirestoreClass {
                 Log.i(activity.javaClass.simpleName, "Task updated successfully")
 
                 activity.addUpdateTaskListSuccess()
-            }.addOnFailureListener {
-                e ->
+            }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error updating tasks: %s", e)
+            }
+    }
+
+    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>) {
+        mFirestore.collection(Constants.USERS)
+            .whereIn(Constants.ID, assignedTo)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+
+                val usersList: ArrayList<User> = ArrayList()
+                for (i in document.documents) {
+                    val user = i.toObject(User::class.java)
+                    if (user != null) {
+                        usersList.add(user)
+                    }
+                    activity.setupMembersList((usersList))
+                }
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error getting assigned members: %s", e)
+            }
+    }
+
+    fun getMemberDetails(activity: MembersActivity, email: String) {
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo(Constants.EMAIL, email)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.i(activity.javaClass.simpleName, document.documents.toString())
+                if(document.documents.size > 0) {
+                    val user = document.documents[0].toObject(User::class.java)!!
+                    activity.memberDetails(user)
+                } else {
+                    activity.hideProgressDialog()
+                    activity.showErrorSnackBar("No such member found")
+                }
+
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error getting user by email: %s", e)
+            }
+    }
+
+    fun assignMemberToBoard(activity: MembersActivity, board: Board, user: User) {
+        val assignedToHashMap = HashMap<String, Any>()
+        assignedToHashMap[Constants.ASSIGNED_TO] = board.assignedTo
+
+        mFirestore.collection(Constants.BOARDS)
+            .document(board.documentId)
+            .update(assignedToHashMap)
+            .addOnSuccessListener {
+                activity.memberAssignSuccess(user)
+            }
+            .addOnFailureListener {e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error updating board: %s", e)
             }
     }
 }

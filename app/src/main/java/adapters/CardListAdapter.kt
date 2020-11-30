@@ -9,12 +9,14 @@ import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.item_card.view.*
 import models.Card
 
-class CardListAdapter(private val context: Context, private var list: ArrayList<Card>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CardListAdapter(private val context: Context, private var list: ArrayList<Card>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return CardViewHolder(LayoutInflater.from(context).inflate(R.layout.item_card, parent, false))
+        return CardViewHolder(LayoutInflater.from(context).inflate(
+            R.layout.item_card, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
