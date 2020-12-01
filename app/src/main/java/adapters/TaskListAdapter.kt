@@ -123,6 +123,16 @@ open class TaskListAdapter(private val context: Context, private var list: Array
             holder.itemView.rv_card_list.setHasFixedSize(true)
             val adapter = CardListAdapter(context, model.cards)
             holder.itemView.rv_card_list.adapter = adapter
+
+            adapter.setOnClickListener(
+                object: CardListAdapter.OnClickListener {
+                    override fun onClick(cardPosition: Int) {
+                        if(context is TaskListActivity) {
+                            context.cardDetails(position, cardPosition)
+                        }
+                    }
+                }
+            )
         }
     }
 
