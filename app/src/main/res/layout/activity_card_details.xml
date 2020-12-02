@@ -112,6 +112,14 @@
                     android:textColor="@color/secondary_text_color"
                     android:textSize="@dimen/card_details_label_text_size" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_selected_members_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_details_value_marginTop"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
                 <TextView
                     android:id="@+id/tv_select_due_date"
                     android:layout_width="match_parent"

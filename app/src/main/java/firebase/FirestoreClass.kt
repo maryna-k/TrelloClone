@@ -9,6 +9,7 @@ import com.google.firebase.firestore.SetOptions
 import com.mkalachova.trelloclone.activities.*
 import models.Board
 import models.Card
+import models.Task
 import models.User
 import timber.log.Timber
 import utils.Constants
@@ -162,7 +163,7 @@ class FirestoreClass {
             }
     }
 
-    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>) {
+    fun getAssignedMembersListDetails(activity: Activity, assignedTo: ArrayList<String>) {
         mFirestore.collection(Constants.USERS)
             .whereIn(Constants.ID, assignedTo)
             .get()
@@ -175,11 +176,20 @@ class FirestoreClass {
                     if (user != null) {
                         usersList.add(user)
                     }
-                    activity.setupMembersList((usersList))
+                    if(activity is MembersActivity) {
+                        activity.setupMembersList((usersList))
+                    } else if(activity is TaskListActivity) {
+                        activity.boardMembersDetailsList(usersList)
+                    }
+
                 }
             }.addOnFailureListener { e ->
-                activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Error getting assigned members: %s", e)
+                if(activity is MembersActivity) {
+                    activity.hideProgressDialog()
+                } else if(activity is TaskListActivity) {
+                    activity.hideProgressDialog()
+                }
+                    Log.e(activity.javaClass.simpleName, "Error getting assigned members: %s", e)
             }
     }
 

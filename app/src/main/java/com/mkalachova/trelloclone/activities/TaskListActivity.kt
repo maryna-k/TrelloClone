@@ -14,12 +14,14 @@ import kotlinx.android.synthetic.main.activity_task_list.*
 import models.Board
 import models.Card
 import models.Task
+import models.User
 import utils.Constants
 
 class TaskListActivity : BaseActivity() {
 
     private lateinit var boardDetails: Board
     private lateinit var boardDocumentId: String
+    lateinit var assignedMemberDetailList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,16 +85,8 @@ class TaskListActivity : BaseActivity() {
         setupActionBar()
         hideProgressDialog()
 
-        val addTaskList = Task(resources.getString(R.string.add_list))
-        board.taskList.add(addTaskList)
-
-        rv_task_list.layoutManager = LinearLayoutManager(
-            this, LinearLayoutManager.HORIZONTAL, false)
-
-        rv_task_list.setHasFixedSize(true)
-
-        val adapter = TaskListAdapter(this, board.taskList)
-        rv_task_list.adapter = adapter
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().getAssignedMembersListDetails(this, boardDetails.assignedTo)
     }
 
     fun addUpdateTaskListSuccess() {
@@ -156,7 +150,24 @@ class TaskListActivity : BaseActivity() {
         intent.putExtra(Constants.BOARD_DETAIL, boardDetails)
         intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
         intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
+        intent.putExtra(Constants.BOARD_MEMBERS_LIST, assignedMemberDetailList)
         startActivityForResult(intent, CARD_DETAIL_REQUEST_CODE)
+    }
+
+    fun boardMembersDetailsList(list: ArrayList<User>) {
+        assignedMemberDetailList = list
+        hideProgressDialog()
+
+        val addTaskList = Task(resources.getString(R.string.add_list))
+        boardDetails.taskList.add(addTaskList)
+
+        rv_task_list.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.HORIZONTAL, false)
+
+        rv_task_list.setHasFixedSize(true)
+
+        val adapter = TaskListAdapter(this, boardDetails.taskList)
+        rv_task_list.adapter = adapter
     }
 
     companion object {

@@ -9,9 +9,12 @@ import com.bumptech.glide.Glide
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.item_member.view.*
 import models.User
+import utils.Constants
 
 class MembersListAdapter (private val context: Context, private var list: ArrayList<User>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MembersViewHolder(LayoutInflater.from(context).inflate(
@@ -31,6 +34,21 @@ class MembersListAdapter (private val context: Context, private var list: ArrayL
 
             holder.itemView.tv_member_name.text = model.name
             holder.itemView.tv_member_email.text = model.email
+
+            if(model.selected) {
+                holder.itemView.iv_selected_member.visibility = View.VISIBLE
+            } else {
+                holder.itemView.iv_selected_member.visibility = View.GONE
+            }
+            holder.itemView.setOnClickListener {
+                if(onClickListener != null) {
+                    if(model.selected) {
+                        onClickListener!!.onClick(position, model, Constants.UNSELECT)
+                    } else {
+                        onClickListener!!.onClick(position, model, Constants.SELECT)
+                    }
+                }
+            }
         }
     }
 
@@ -39,4 +57,12 @@ class MembersListAdapter (private val context: Context, private var list: ArrayL
     }
 
     class MembersViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
+    }
+
+    interface OnClickListener {
+        fun onClick(position: Int, user: User, action: String)
+    }
 }
