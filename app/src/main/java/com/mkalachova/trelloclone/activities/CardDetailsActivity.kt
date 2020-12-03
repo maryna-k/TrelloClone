@@ -2,6 +2,7 @@ package com.mkalachova.trelloclone.activities
 
 import adapters.CardMemberAdapter
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -17,6 +18,9 @@ import firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_card_details.*
 import models.*
 import utils.Constants
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CardDetailsActivity : BaseActivity() {
 
@@ -26,6 +30,7 @@ class CardDetailsActivity : BaseActivity() {
     private lateinit var cardTitle: String
     private var selectedColor: String = ""
     private lateinit var membersDetailList: ArrayList<User>
+    private var selectedDueDateMilliseconds: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +65,17 @@ class CardDetailsActivity : BaseActivity() {
         }
 
         setupSelectedMembersList()
+        selectedDueDateMilliseconds =
+            boardDetails.taskList[taskListPosition].cards[cardPosition].dueDate
+        if(selectedDueDateMilliseconds > 0) {
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+            val selectedDate = simpleDateFormat.format(Date(selectedDueDateMilliseconds))
+            tv_select_due_date.text = selectedDate
+        }
+
+        tv_select_due_date.setOnClickListener {
+            showDataPicker()
+        }
     }
 
     private fun setupActionBar() {
@@ -119,7 +135,8 @@ class CardDetailsActivity : BaseActivity() {
             cardTitle,
             boardDetails.taskList[taskListPosition].cards[cardPosition].createdBy,
             boardDetails.taskList[taskListPosition].cards[cardPosition].assignedTo,
-            selectedColor
+            selectedColor,
+            selectedDueDateMilliseconds
         )
 
         val taskList: ArrayList<Task> = boardDetails.taskList
@@ -280,5 +297,35 @@ class CardDetailsActivity : BaseActivity() {
             tv_select_members.visibility = View.VISIBLE
             rv_selected_members_list.visibility = View.GONE
         }
+    }
+
+    private fun showDataPicker() {
+        val c = Calendar.getInstance()
+        val year =
+            c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val dpd = DatePickerDialog(
+            this,
+            { view, year, monthOfYear, dayOfMonth ->
+                val sDayOfMonth = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
+
+                val sMonthOfYear =
+                    if ((monthOfYear + 1) < 10) "0${monthOfYear + 1}" else "${monthOfYear + 1}"
+
+                val selectedDate = "$sDayOfMonth/$sMonthOfYear/$year"
+
+                tv_select_due_date.text = selectedDate
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+                val theDate = sdf.parse(selectedDate)
+                selectedDueDateMilliseconds = theDate!!.time
+            },
+            year,
+            month,
+            day
+        )
+        dpd.show()
     }
 }
