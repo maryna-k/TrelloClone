@@ -1,4 +1,4 @@
-package adapters
+package com.mkalachova.trelloclone.adapters
 
 import android.content.Context
 import android.content.res.Resources
@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mkalachova.trelloclone.R
 import com.mkalachova.trelloclone.activities.TaskListActivity
 import kotlinx.android.synthetic.main.item_task.view.*
-import models.Task
+import com.mkalachova.trelloclone.models.Task
 import java.util.*
 import kotlin.collections.ArrayList
 

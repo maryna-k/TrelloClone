@@ -1,6 +1,6 @@
-package dialogs
+package com.mkalachova.trelloclone.dialogs
 
-import adapters.MembersListAdapter
+import com.mkalachova.trelloclone.adapters.MembersListAdapter
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.dialog_list.view.*
-import models.User
+import com.mkalachova.trelloclone.models.User
 
 abstract class MembersListDialog(
     context: Context,

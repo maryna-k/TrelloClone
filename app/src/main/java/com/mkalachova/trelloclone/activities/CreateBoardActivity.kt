@@ -14,10 +14,10 @@ import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mkalachova.trelloclone.R
-import firebase.FirestoreClass
+import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_create_board.*
-import models.Board
-import utils.Constants
+import com.mkalachova.trelloclone.models.Board
+import com.mkalachova.trelloclone.utils.Constants
 import java.io.IOException
 
 class CreateBoardActivity : BaseActivity() {

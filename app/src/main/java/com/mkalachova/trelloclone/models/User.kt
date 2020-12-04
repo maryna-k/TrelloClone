@@ -1,4 +1,4 @@
-package models
+package com.mkalachova.trelloclone.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

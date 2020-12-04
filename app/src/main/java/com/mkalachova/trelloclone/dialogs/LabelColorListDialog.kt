@@ -1,6 +1,6 @@
-package dialogs
+package com.mkalachova.trelloclone.dialogs
 
-import adapters.LabelColorAdapter
+import com.mkalachova.trelloclone.adapters.LabelColorAdapter
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle

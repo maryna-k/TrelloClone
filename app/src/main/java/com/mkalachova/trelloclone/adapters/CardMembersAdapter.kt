@@ -1,4 +1,4 @@
-package adapters
+package com.mkalachova.trelloclone.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.item_card_selected_member.view.*
-import models.SelectedMembers
+import com.mkalachova.trelloclone.models.SelectedMembers
 
 open class CardMemberAdapter(
     private val context: Context,

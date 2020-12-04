@@ -1,4 +1,4 @@
-package adapters
+package com.mkalachova.trelloclone.adapters
 
 import android.content.Context
 import android.graphics.Color
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mkalachova.trelloclone.R
 import com.mkalachova.trelloclone.activities.TaskListActivity
 import kotlinx.android.synthetic.main.item_card.view.*
-import models.Card
-import models.SelectedMembers
+import com.mkalachova.trelloclone.models.Card
+import com.mkalachova.trelloclone.models.SelectedMembers
 
 class CardListAdapter(private val context: Context, private var list: ArrayList<Card>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

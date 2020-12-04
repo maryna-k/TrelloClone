@@ -1,6 +1,6 @@
 package com.mkalachova.trelloclone.activities
 
-import adapters.CardMemberAdapter
+import com.mkalachova.trelloclone.adapters.CardMemberAdapter
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.graphics.Color
@@ -12,12 +12,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mkalachova.trelloclone.R
-import dialogs.LabelColorListDialog
-import dialogs.MembersListDialog
-import firebase.FirestoreClass
+import com.mkalachova.trelloclone.dialogs.LabelColorListDialog
+import com.mkalachova.trelloclone.dialogs.MembersListDialog
+import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_card_details.*
-import models.*
-import utils.Constants
+import com.mkalachova.trelloclone.models.*
+import com.mkalachova.trelloclone.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList

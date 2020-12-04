@@ -1,6 +1,6 @@
 package com.mkalachova.trelloclone.activities
 
-import adapters.TaskListAdapter
+import com.mkalachova.trelloclone.adapters.TaskListAdapter
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,13 +9,13 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mkalachova.trelloclone.R
-import firebase.FirestoreClass
+import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_task_list.*
-import models.Board
-import models.Card
-import models.Task
-import models.User
-import utils.Constants
+import com.mkalachova.trelloclone.models.Board
+import com.mkalachova.trelloclone.models.Card
+import com.mkalachova.trelloclone.models.Task
+import com.mkalachova.trelloclone.models.User
+import com.mkalachova.trelloclone.utils.Constants
 
 class TaskListActivity : BaseActivity() {
 

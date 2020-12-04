@@ -1,4 +1,4 @@
-package firebase
+package com.mkalachova.trelloclone.firebase
 
 import android.app.Activity
 import android.util.Log
@@ -7,12 +7,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.mkalachova.trelloclone.activities.*
-import models.Board
-import models.Card
-import models.Task
-import models.User
+import com.mkalachova.trelloclone.models.Board
+import com.mkalachova.trelloclone.models.User
 import timber.log.Timber
-import utils.Constants
+import com.mkalachova.trelloclone.utils.Constants
 
 class FirestoreClass {
 
@@ -29,16 +27,31 @@ class FirestoreClass {
             }
     }
 
-    fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
+    fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .update(userHashMap)
             .addOnSuccessListener {
                 Log.e(activity.javaClass.simpleName, "Profile Data updated successfully")
                 Toast.makeText(activity, "Profile updated", Toast.LENGTH_SHORT).show()
-                activity.profileUpdateSuccess()
+                when(activity) {
+                    is MainActivity -> {
+                        activity.tokenUpdateSuccess()
+                    }
+                    is MyProfileActivity -> {
+                        activity.profileUpdateSuccess()
+                    }
+                }
+
             }.addOnFailureListener { e ->
-                activity.hideProgressDialog()
+                when(activity) {
+                    is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is MyProfileActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
                 Log.e(activity.javaClass.simpleName, "Error updating profile", e)
             }
     }

@@ -1,4 +1,4 @@
-package adapters
+package com.mkalachova.trelloclone.adapters
 
 import android.content.Context
 import android.graphics.Color

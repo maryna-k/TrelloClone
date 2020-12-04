@@ -1,4 +1,4 @@
-package adapters
+package com.mkalachova.trelloclone.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.item_board.view.*
-import models.Board
+import com.mkalachova.trelloclone.models.Board
 
 open class BoardItemsAdapter(private val context: Context,
                              private val list: ArrayList<Board>):

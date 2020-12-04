@@ -10,7 +10,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import models.User
+import com.mkalachova.trelloclone.models.User
 import timber.log.Timber
 
 class SignInActivity : BaseActivity() {

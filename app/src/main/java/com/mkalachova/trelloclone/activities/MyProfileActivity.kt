@@ -14,10 +14,10 @@ import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mkalachova.trelloclone.R
-import firebase.FirestoreClass
+import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_my_profile.*
-import models.User
-import utils.Constants
+import com.mkalachova.trelloclone.models.User
+import com.mkalachova.trelloclone.utils.Constants
 import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
