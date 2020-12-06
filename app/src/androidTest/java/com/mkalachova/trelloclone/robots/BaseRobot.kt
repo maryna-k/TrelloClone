@@ -5,7 +5,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.mkalachova.trelloclone.utils.getText
 import org.hamcrest.Matcher
+import java.util.concurrent.atomic.AtomicReference
 
 open class BaseRobot {
 
@@ -15,8 +17,16 @@ open class BaseRobot {
 
     fun displayed(matcher: Matcher<View>) = onView(matcher).check(matches(isDisplayed()))
 
+    fun clearTextField(matcher: Matcher<View>) = onView(matcher).perform(clearText())
+
     fun enterText(matcher: Matcher<View>, text: String) =  onView(matcher)
         .perform(typeText(text))
         .perform(closeSoftKeyboard())
+
+    fun getElementText(elementMatcher: Matcher<View>): String {
+        val textReference: AtomicReference<String> = AtomicReference()
+        onView(elementMatcher).perform(getText(textReference))
+        return textReference.toString()
+    }
 
 }

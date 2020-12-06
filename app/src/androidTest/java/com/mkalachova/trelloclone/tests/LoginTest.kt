@@ -16,26 +16,25 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class LoginTest : BaseTest() {
 
-    val email = "fred@email.com"
-    val password = "temptemp"
+    private val validEmail = "fred@email.com"
+    private val password = "temptemp"
 
     @get: Rule
-    var mActivityTestRule = ActivityScenarioRule(SplashActivity::class.java)
+    var activityTestRule = ActivityScenarioRule(SplashActivity::class.java)
 
     @get: Rule
     var chain = RuleChain.outerRule(clearPreferencesRule)
         .around(clearFilesRule)
-        .around(mActivityTestRule)
+        .around(activityTestRule)
 
     @Test
     fun verifyLogin() {
-
         join {
             sleep(3000)
             tapSignInBtn()
         }
         signIn {
-            enterEmail(email)
+            enterEmail(validEmail)
             enterPassword(password)
             tapSignInButton()
         }

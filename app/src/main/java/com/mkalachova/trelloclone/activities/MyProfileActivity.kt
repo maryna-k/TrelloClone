@@ -18,6 +18,7 @@ import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_my_profile.*
 import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.Constants
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 import java.io.IOException
 
 class MyProfileActivity : BaseActivity() {
@@ -52,9 +53,8 @@ class MyProfileActivity : BaseActivity() {
             if(mSelectedImageFileUri != null) {
                 uploadUserImage()
             } else {
-                showProgressDialog(resources.getString(R.string.please_wait))
+                updateUserProfileData()
             }
-            uploadUserImage()
         }
     }
 
@@ -128,6 +128,7 @@ class MyProfileActivity : BaseActivity() {
     }
 
     private fun updateUserProfileData() {
+        EspressoIdlingResource.increment()
         val userHashMap = HashMap<String, Any>()
         var changesMade = false
 
@@ -135,11 +136,11 @@ class MyProfileActivity : BaseActivity() {
             userHashMap[Constants.IMAGE] = mProfileImageUrl
             changesMade = true
         }
-        if(et_name.text.toString() != mUserDetails.name) {
+        if(et_name.text.toString().isNotEmpty() && et_name.text.toString() != mUserDetails.name) {
             userHashMap[Constants.NAME] = et_name.text.toString()
             changesMade = true
         }
-        if(et_mobile.text.toString() != mUserDetails.mobile.toString()) {
+        if(et_mobile.text.toString().isNotBlank() && et_mobile.text.toString() != mUserDetails.mobile.toString()) {
             userHashMap[Constants.MOBILE] = et_mobile.text.toString().toLong()
             changesMade = true
         }
@@ -147,6 +148,7 @@ class MyProfileActivity : BaseActivity() {
         if(changesMade) {
             FirestoreClass().updateUserProfileData(this, userHashMap)
         }
+        EspressoIdlingResource.decrement()
     }
 
     private fun uploadUserImage() {

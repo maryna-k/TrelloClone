@@ -3,7 +3,6 @@ package com.mkalachova.trelloclone.robots
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.mkalachova.trelloclone.R
 
-
 fun signIn(signInFunction: SingInRobot.() -> Unit) = SingInRobot().apply { signInFunction() }
 
 class SingInRobot : BaseRobot() {
