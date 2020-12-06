@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
@@ -11,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.R
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import com.mkalachova.trelloclone.models.User
-import timber.log.Timber
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 
 class SignInActivity : BaseActivity() {
 
@@ -59,6 +60,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun signIn(email: String, password: String) {
+        EspressoIdlingResource.increment()
         showProgressDialog(resources.getString(R.string.please_wait))
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -67,12 +69,12 @@ class SignInActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     startActivity(Intent(this, MainActivity::class.java))
-                    Toast.makeText(baseContext, "Authentication successful!",
-                        Toast.LENGTH_SHORT).show()
+                    EspressoIdlingResource.decrement()
                 } else {
-                    Timber.w("signInWithEmail:failure ${task.exception}")
+                    Log.i("signInWithEmail", "failure ${task.exception}")
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
+                    EspressoIdlingResource.decrement()
                 }
             }
     }

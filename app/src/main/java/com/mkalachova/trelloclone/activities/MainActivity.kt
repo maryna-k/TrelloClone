@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
 import com.mkalachova.trelloclone.R
 import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import com.mkalachova.trelloclone.models.Board
 import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.Constants
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 
 class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
@@ -51,13 +52,13 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         if(tokenUpdated) {
             showProgressDialog(resources.getString(R.string.please_wait))
             FirestoreClass().loadUserData(this, true)
-            hideProgressDialog()
         } else {
-            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this) {
+            FirebaseInstallations.getInstance().getToken(false).addOnSuccessListener(this) {
                 instanceIdResult ->
                 updateFCMToken(instanceIdResult.token)
             }
         }
+        hideProgressDialog()
 
         fab_create_board.setOnClickListener {
             val intent = Intent(this, CreateBoardActivity::class.java)
@@ -67,6 +68,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
     }
 
     private fun setupActionBar() {
+        Log.i(this.javaClass.simpleName, "Method called : setupActionBar")
         setSupportActionBar(toolbar_main_activity)
 
         toolbar_main_activity.setNavigationIcon(R.drawable.ic_action_navigation_menu)
@@ -74,37 +76,46 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         toolbar_main_activity.setNavigationOnClickListener {
             toggleDrawer()
         }
+        Log.i(this.javaClass.simpleName, "Method called : setupActionBar")
     }
 
     private fun toggleDrawer() {
+        Log.i(this.javaClass.simpleName, "Method called : toggleDrawer")
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             drawer_layout.openDrawer(GravityCompat.START)
         }
+        Log.i(this.javaClass.simpleName, "Method called : toggleDrawer")
     }
 
     override fun onBackPressed() {
+        Log.i(this.javaClass.simpleName, "Method called : onBackPressed")
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             doubleBackToExit()
         }
+        Log.i(this.javaClass.simpleName, "Method called : onBackPressed")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
 
         if(resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE) {
             FirestoreClass().loadUserData(this)
         } else if(resultCode == Activity.RESULT_OK && requestCode == CREATE_BOARD_REQUEST_CODE) {
             FirestoreClass().getBoardsList(this)
+            hideProgressDialog()
         } else {
             Log.e("onActivityResult", "Cancelled")
         }
+        Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        Log.i(this.javaClass.simpleName, "Method called : onNavigationItemSelected")
         when(item.itemId) {
             R.id.nav_my_profile -> {
                 startActivityForResult(Intent(this, MyProfileActivity::class.java),
@@ -121,12 +132,16 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
+        Log.i(this.javaClass.simpleName, "Method called : onNavigationItemSelected")
         return true
     }
 
     fun updateNavigationUserDetails(user: User, readBoardsList: Boolean) {
-        userName = user.name
+        Log.i(this.javaClass.simpleName, "Method called : updateNavigationUserDetails")
+        EspressoIdlingResource.increment()
+        hideProgressDialog()
 
+        userName = user.name
         Glide
             .with(this)
             .load(user.image)
@@ -139,10 +154,14 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         if(readBoardsList) {
             showProgressDialog(resources.getString(R.string.please_wait))
             FirestoreClass().getBoardsList(this)
+            hideProgressDialog()
         }
+        EspressoIdlingResource.decrement()
+        Log.i(this.javaClass.simpleName, "Method called : updateNavigationUserDetails")
     }
 
     fun populateBoardsListToUI(boardList: ArrayList<Board>) {
+        Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
         if(boardList.size > 0) {
             rv_boards_list.visibility = View.VISIBLE
             tv_no_boards_available.visibility = View.GONE
@@ -159,28 +178,31 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
                     intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
                     startActivity(intent)
                 }
-
             })
-
         } else {
             rv_boards_list.visibility = View.GONE
             tv_no_boards_available.visibility = View.VISIBLE
         }
+        Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
     }
 
     fun tokenUpdateSuccess() {
+        Log.i(this.javaClass.simpleName, "Method called : tokenUpdateSuccess")
         hideProgressDialog()
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putBoolean(Constants.FCM_TOKEN_UPDATED, true)
         editor.apply()
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().loadUserData(this, true)
+        Log.i(this.javaClass.simpleName, "Method called : tokenUpdateSuccess")
     }
 
     private fun updateFCMToken(token: String) {
+        Log.i(this.javaClass.simpleName, "Method called : updateFCMToken")
         val userHashMap = HashMap<String, Any>()
         userHashMap[Constants.FCM_TOKEN] = token
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().updateUserProfileData(this, userHashMap)
+        Log.i(this.javaClass.simpleName, "Method called : updateFCMToken")
     }
 }

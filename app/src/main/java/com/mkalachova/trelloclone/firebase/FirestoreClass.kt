@@ -5,35 +5,54 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
 import com.mkalachova.trelloclone.activities.*
 import com.mkalachova.trelloclone.models.Board
 import com.mkalachova.trelloclone.models.User
-import timber.log.Timber
 import com.mkalachova.trelloclone.utils.Constants
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 
 class FirestoreClass {
 
-    private val mFirestore = FirebaseFirestore.getInstance()
+    private var mFirestore : FirebaseFirestore
+
+    init {
+        mFirestore = FirebaseFirestore.getInstance()
+        if (!mFirestore.getFirestoreSettings().host.contains("10.0.2.2")) {
+            mFirestore.useEmulator("10.0.2.2", 8080);
+            val settings = FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build()
+            mFirestore.firestoreSettings = settings
+        }
+    }
 
     fun registerUser(activity: SignUpActivity, userInfo: User) {
+        Log.i(this.javaClass.simpleName, "Method called : registerUser")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .set(userInfo, SetOptions.merge())
             .addOnSuccessListener {
                 activity.userRegisteredSuccess()
-            }.addOnFailureListener { e ->
-                Timber.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+                EspressoIdlingResource.decrement()
             }
+            .addOnFailureListener { e ->
+                Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+                EspressoIdlingResource.decrement()
+            }
+        Log.i(this.javaClass.simpleName, "Method called : registerUser")
     }
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
+        Log.i(this.javaClass.simpleName, "Method called : updateUserProfileData")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .update(userHashMap)
             .addOnSuccessListener {
-                Log.e(activity.javaClass.simpleName, "Profile Data updated successfully")
-                Toast.makeText(activity, "Profile updated", Toast.LENGTH_SHORT).show()
+                Log.i(activity.javaClass.simpleName, "Profile Data updated successfully")
                 when(activity) {
                     is MainActivity -> {
                         activity.tokenUpdateSuccess()
@@ -42,8 +61,9 @@ class FirestoreClass {
                         activity.profileUpdateSuccess()
                     }
                 }
-
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 when(activity) {
                     is MainActivity -> {
                         activity.hideProgressDialog()
@@ -53,10 +73,14 @@ class FirestoreClass {
                     }
                 }
                 Log.e(activity.javaClass.simpleName, "Error updating profile", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : updateUserProfileData")
     }
 
     fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
+        Log.i(this.javaClass.simpleName, "Method called : loadUserData")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
@@ -76,7 +100,9 @@ class FirestoreClass {
                         }
                     }
                 }
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 when(activity) {
                     is SignInActivity ->{
                         activity.hideProgressDialog()
@@ -85,20 +111,28 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                 }
-                Timber.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+                Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : loadUserData")
     }
 
     fun getCurrentUserId(): String {
+        Log.i(this.javaClass.simpleName, "Method called : getCurrentUserId")
+        EspressoIdlingResource.increment()
         var currentUser = FirebaseAuth.getInstance().currentUser
         var currentUserId = ""
         if(currentUser != null) {
             currentUserId = currentUser.uid
         }
+        EspressoIdlingResource.decrement()
+        Log.i(this.javaClass.simpleName, "Method called : getCurrentUserId")
         return currentUserId
     }
 
     fun getBoardsList(activity: MainActivity) {
+        Log.i(this.javaClass.simpleName, "Method called : getBoardsList")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.BOARDS)
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
             .get()
@@ -113,13 +147,19 @@ class FirestoreClass {
 
                 activity.populateBoardsListToUI(boardList)
                 activity.hideProgressDialog()
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : getBoardsList")
     }
 
     fun createBoard(activity: CreateBoardActivity, boardInfo: Board) {
+        Log.i(this.javaClass.simpleName, "Method called : createBoard")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.BOARDS)
             .document()
             .set(boardInfo, SetOptions.merge())
@@ -128,13 +168,19 @@ class FirestoreClass {
                 Toast.makeText(activity, "Board created successfully", Toast.LENGTH_SHORT)
                     .show()
                 activity.boardCreatedSuccessfully()
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error writing to Firestore: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : createBoard")
     }
 
     fun getBoardDetails(activity: TaskListActivity, boardDocumentId: String) {
+        Log.i(this.javaClass.simpleName, "Method called : getBoardDetails")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.BOARDS)
             .document(boardDocumentId)
             .get()
@@ -144,14 +190,19 @@ class FirestoreClass {
                 val board = document.toObject(Board::class.java)!!
                 board.documentId = document.id
                 activity.boardDetails(board)
-
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while creating a board", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : getBoardDetails")
     }
 
     fun addUpdateTaskList(activity: Activity, board: Board) {
+        Log.i(this.javaClass.simpleName, "Method called : addUpdateTaskList")
+        EspressoIdlingResource.increment()
         val taskListHashMap = HashMap<String, Any>()
         taskListHashMap[Constants.TASK_LIST] = board.taskList
 
@@ -166,17 +217,23 @@ class FirestoreClass {
                 } else if (activity is CardDetailsActivity) {
                     activity.addUpdateTaskListSuccess()
                 }
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 if(activity is TaskListActivity) {
                     activity.hideProgressDialog()
                 } else if (activity is CardDetailsActivity) {
                     activity.hideProgressDialog()
                 }
                 Log.e(activity.javaClass.simpleName, "Error updating tasks: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : addUpdateTaskList")
     }
 
     fun getAssignedMembersListDetails(activity: Activity, assignedTo: ArrayList<String>) {
+        Log.i(this.javaClass.simpleName, "Method called : getAssignedMembersListDetails")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.USERS)
             .whereIn(Constants.ID, assignedTo)
             .get()
@@ -194,19 +251,24 @@ class FirestoreClass {
                     } else if(activity is TaskListActivity) {
                         activity.boardMembersDetailsList(usersList)
                     }
-
                 }
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 if(activity is MembersActivity) {
                     activity.hideProgressDialog()
                 } else if(activity is TaskListActivity) {
                     activity.hideProgressDialog()
                 }
-                    Log.e(activity.javaClass.simpleName, "Error getting assigned members: %s", e)
+                Log.e(activity.javaClass.simpleName, "Error getting assigned members: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : getAssignedMembersListDetails")
     }
 
     fun getMemberDetails(activity: MembersActivity, email: String) {
+        Log.i(this.javaClass.simpleName, "Method called : getMemberDetails")
+        EspressoIdlingResource.increment()
         mFirestore.collection(Constants.USERS)
             .whereEqualTo(Constants.EMAIL, email)
             .get()
@@ -219,14 +281,19 @@ class FirestoreClass {
                     activity.hideProgressDialog()
                     activity.showErrorSnackBar("No such member found")
                 }
-
-            }.addOnFailureListener { e ->
+                EspressoIdlingResource.decrement()
+            }
+            .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error getting user by email: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : getMemberDetails")
     }
 
     fun assignMemberToBoard(activity: MembersActivity, board: Board, user: User) {
+        Log.i(this.javaClass.simpleName, "Method called : assignMemberToBoard")
+        EspressoIdlingResource.increment()
         val assignedToHashMap = HashMap<String, Any>()
         assignedToHashMap[Constants.ASSIGNED_TO] = board.assignedTo
 
@@ -235,10 +302,13 @@ class FirestoreClass {
             .update(assignedToHashMap)
             .addOnSuccessListener {
                 activity.memberAssignSuccess(user)
+                EspressoIdlingResource.decrement()
             }
             .addOnFailureListener {e ->
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error updating board: %s", e)
+                EspressoIdlingResource.decrement()
             }
+        Log.i(this.javaClass.simpleName, "Method called : assignMemberToBoard")
     }
 }

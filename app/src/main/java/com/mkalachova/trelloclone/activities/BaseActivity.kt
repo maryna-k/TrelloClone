@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -20,16 +21,19 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
+
+        mProgressDialog = Dialog(this)
     }
 
     fun showProgressDialog(text: String) {
-        mProgressDialog = Dialog(this)
+        Log.i("ProgressDialog", "show")
         mProgressDialog.setContentView(R.layout.dialog_progress)
         mProgressDialog.tv_progress_text.text = text
         mProgressDialog.show()
     }
 
     fun hideProgressDialog() {
+        Log.i("ProgressDialog", "hide")
         mProgressDialog.dismiss()
     }
 
