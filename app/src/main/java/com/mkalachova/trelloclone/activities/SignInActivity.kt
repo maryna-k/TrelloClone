@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.R
+import com.mkalachova.trelloclone.firebase.FirebaseAuthClass
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.EspressoIdlingResource
@@ -40,7 +41,8 @@ class SignInActivity : BaseActivity() {
             val password = et_password_signin.text.toString()
 
             if(validateForm(email, password)) {
-                auth = FirebaseAuth.getInstance()
+//                auth = FirebaseAuth.getInstance()
+                auth = FirebaseAuthClass.authInstance
                 signIn(email, password)
             }
         }
@@ -79,7 +81,7 @@ class SignInActivity : BaseActivity() {
             }
     }
 
-    fun signInSuccesss(user: User) {
+    fun signInSuccesss() {
         hideProgressDialog()
         startActivity(Intent(this, MainActivity::class.java))
         finish()

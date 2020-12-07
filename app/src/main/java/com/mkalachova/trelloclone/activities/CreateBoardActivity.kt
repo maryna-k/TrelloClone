@@ -18,6 +18,7 @@ import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_create_board.*
 import com.mkalachova.trelloclone.models.Board
 import com.mkalachova.trelloclone.utils.Constants
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 import java.io.IOException
 
 class CreateBoardActivity : BaseActivity() {
@@ -75,9 +76,11 @@ class CreateBoardActivity : BaseActivity() {
     }
 
     fun boardCreatedSuccessfully() {
+        EspressoIdlingResource.increment()
         hideProgressDialog()
         setResult(Activity.RESULT_OK)
         finish()
+        EspressoIdlingResource.decrement()
     }
 
 

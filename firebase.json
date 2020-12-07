@@ -1,4 +1,5 @@
 {
+  "rulesFile": "database.rules.json",
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
@@ -16,8 +17,5 @@
     "ui": {
       "enabled": true
     }
-  },
-  "remoteconfig": {
-    "template": "remoteconfig.template.json"
   }
 }

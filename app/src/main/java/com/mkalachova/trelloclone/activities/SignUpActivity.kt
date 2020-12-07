@@ -1,5 +1,6 @@
 package com.mkalachova.trelloclone.activities
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +10,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.mkalachova.trelloclone.R
+import com.mkalachova.trelloclone.firebase.FirebaseAuthClass
 import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import com.mkalachova.trelloclone.models.User
@@ -57,7 +59,7 @@ class SignUpActivity : BaseActivity() {
     private fun registerUser(name: String, email: String, password: String) {
         showProgressDialog(resources.getString(R.string.please_wait))
 
-        FirebaseAuth.getInstance()
+        FirebaseAuthClass.authInstance
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
 
@@ -107,5 +109,7 @@ class SignUpActivity : BaseActivity() {
             "Registered user",
             Toast.LENGTH_SHORT
         ).show()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

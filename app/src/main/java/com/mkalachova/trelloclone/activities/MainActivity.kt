@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView.OnNavigationItemSel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.installations.FirebaseInstallations
 import com.mkalachova.trelloclone.R
+import com.mkalachova.trelloclone.firebase.FirebaseAuthClass
 import com.mkalachova.trelloclone.firebase.FirestoreClass
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -101,6 +102,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
+        EspressoIdlingResource.increment()
         super.onActivityResult(requestCode, resultCode, data)
 
         if(resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE) {
@@ -112,6 +114,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             Log.e("onActivityResult", "Cancelled")
         }
         Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
+        EspressoIdlingResource.decrement()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -122,7 +125,8 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
                     MY_PROFILE_REQUEST_CODE)
             }
             R.id.nav_sign_out -> {
-                FirebaseAuth.getInstance().signOut()
+//                FirebaseAuth.getInstance().signOut()
+                FirebaseAuthClass.authInstance.signOut()
                 sharedPreferences.edit().clear().apply()
 
                 val intent = Intent(this, IntroActivity::class.java)
@@ -162,6 +166,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
     fun populateBoardsListToUI(boardList: ArrayList<Board>) {
         Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
+        EspressoIdlingResource.increment()
         if(boardList.size > 0) {
             rv_boards_list.visibility = View.VISIBLE
             tv_no_boards_available.visibility = View.GONE
@@ -183,6 +188,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             rv_boards_list.visibility = View.GONE
             tv_no_boards_available.visibility = View.VISIBLE
         }
+        EspressoIdlingResource.decrement()
         Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
     }
 

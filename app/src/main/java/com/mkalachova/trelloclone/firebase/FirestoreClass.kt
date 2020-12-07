@@ -20,7 +20,7 @@ class FirestoreClass {
     init {
         mFirestore = FirebaseFirestore.getInstance()
         if (!mFirestore.getFirestoreSettings().host.contains("10.0.2.2")) {
-            mFirestore.useEmulator("10.0.2.2", 8080);
+            mFirestore.useEmulator("10.0.2.2", 8080)
             val settings = FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false)
                 .build()
@@ -90,7 +90,7 @@ class FirestoreClass {
                 if(loggedInUser != null) {
                     when (activity) {
                         is SignInActivity -> {
-                            activity.signInSuccesss(loggedInUser)
+                            activity.signInSuccesss()
                         }
                         is MainActivity -> {
                             activity.updateNavigationUserDetails(loggedInUser, readBoardsList)

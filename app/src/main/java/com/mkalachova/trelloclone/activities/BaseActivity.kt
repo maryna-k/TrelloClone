@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.R
+import com.mkalachova.trelloclone.firebase.FirebaseAuthClass
 import kotlinx.android.synthetic.main.dialog_progress.*
 
 open class BaseActivity : AppCompatActivity() {
@@ -38,7 +39,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getCurrentUserId() : String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
+        return FirebaseAuthClass.authInstance.currentUser!!.uid
     }
 
     fun doubleBackToExit() {
