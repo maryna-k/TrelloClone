@@ -271,7 +271,8 @@ class CardDetailsActivity : BaseActivity() {
                 if (membersDetailList[i].id == j) {
                     val selectedMember = SelectedMembers(
                         membersDetailList[i].id,
-                        membersDetailList[i].image
+                        membersDetailList[i].image,
+                        membersDetailList[i].email
                     )
                     selectedMembersList.add(selectedMember)
                 }

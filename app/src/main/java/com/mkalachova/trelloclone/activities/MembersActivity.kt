@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.dialog_search_member.*
 import com.mkalachova.trelloclone.models.Board
 import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.Constants
+import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.DataOutputStream

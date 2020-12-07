@@ -186,7 +186,7 @@ open class TaskListAdapter(private val context: Context, private var list: Array
     private fun alertDialogForDeleteList(position: Int, title: String) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Alert")
-        builder.setMessage("Are you sure you want to delete $title.")
+        builder.setMessage("Are you sure you want to delete $title?")
         builder.setIcon(android.R.drawable.ic_dialog_alert)
 
         builder.setPositiveButton("Yes") { dialogInterface, which ->

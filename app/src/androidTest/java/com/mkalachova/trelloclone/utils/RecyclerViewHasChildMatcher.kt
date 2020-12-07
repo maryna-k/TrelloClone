@@ -17,7 +17,7 @@ class RecyclerViewHasChildMatcher private constructor(val childMatcher: Matcher<
 
     override fun matchesSafely(item: RecyclerView?): Boolean {
         val lastIndex = item?.adapter?.itemCount?.minus(1)
-        for (i in 0 until lastIndex!!) {
+        for (i in 0..lastIndex!!) {
             val viewHolder = item.findViewHolderForAdapterPosition(i)
             if (childMatcher.matches(viewHolder?.itemView)) return true
         }

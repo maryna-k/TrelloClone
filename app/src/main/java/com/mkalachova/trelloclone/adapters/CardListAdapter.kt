@@ -45,6 +45,7 @@ class CardListAdapter(private val context: Context, private var list: ArrayList<
                             val selectedMember = SelectedMembers(
                                 context.assignedMemberDetailList[i].id,
                                 context.assignedMemberDetailList[i].image,
+                                context.assignedMemberDetailList[i].email
                             )
                             selectedMembersList.add(selectedMember)
                         }

@@ -35,9 +35,11 @@ open class CardMemberAdapter(
             if (position == list.size - 1 && assignMembers) {
                 holder.itemView.iv_add_member.visibility = View.VISIBLE
                 holder.itemView.iv_selected_member_image.visibility = View.GONE
+                holder.itemView.iv_selected_member_image.contentDescription = ""
             } else {
                 holder.itemView.iv_add_member.visibility = View.GONE
                 holder.itemView.iv_selected_member_image.visibility = View.VISIBLE
+                holder.itemView.iv_selected_member_image.contentDescription = model.email
 
                 Glide
                     .with(context)

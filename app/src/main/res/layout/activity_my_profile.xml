@@ -68,7 +68,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/my_profile_et_email_marginTop">
 
-                    <!--TODO (Step 4: Here we make the email EditText as focusable false. As it should not be editable.)-->
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"

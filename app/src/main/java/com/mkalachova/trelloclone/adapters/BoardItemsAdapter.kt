@@ -23,6 +23,7 @@ open class BoardItemsAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val model = list[position]
+
         if(holder is BoardViewHolder) {
             Glide
                 .with(context)

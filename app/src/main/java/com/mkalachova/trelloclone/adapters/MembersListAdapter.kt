@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.item_member.view.*
 import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.Constants
 
-class MembersListAdapter (private val context: Context, private var list: ArrayList<User>) :
+class MembersListAdapter (private val context: Context,
+                          private var list: ArrayList<User>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onClickListener: OnClickListener? = null

@@ -3,6 +3,7 @@ package com.mkalachova.trelloclone.robots
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.mkalachova.trelloclone.utils.getText
@@ -17,6 +18,8 @@ open class BaseRobot {
 
     fun displayed(matcher: Matcher<View>) = onView(matcher).check(matches(isDisplayed()))
 
+    fun doesntExist(matcher: Matcher<View>) = onView(matcher).check(doesNotExist())
+
     fun clearTextField(matcher: Matcher<View>) = onView(matcher).perform(clearText())
 
     fun enterText(matcher: Matcher<View>, text: String) =  onView(matcher)
@@ -28,5 +31,9 @@ open class BaseRobot {
         onView(elementMatcher).perform(getText(textReference))
         return textReference.toString()
     }
+
+    fun scrollToElement(matcher: Matcher<View>) = onView(matcher).perform(scrollTo())
+
+    fun closeKeyboard(matcher: Matcher<View>) = onView(matcher).perform(closeSoftKeyboard())
 
 }
