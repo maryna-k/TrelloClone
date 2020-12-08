@@ -47,7 +47,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     }
 
     private fun sendNotification(title: String, message: String) {
-        val intent = if(FirestoreClass().getCurrentUserId().isNotEmpty()) {
+        val intent = if(FirestoreClass.getCurrentUserId().isNotEmpty()) {
             Intent(this, MainActivity::class.java)
         } else {
             Intent(this, SignInActivity::class.java)

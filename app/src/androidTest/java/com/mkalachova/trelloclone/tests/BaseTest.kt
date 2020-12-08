@@ -1,11 +1,8 @@
 package com.mkalachova.trelloclone.tests
 
 import androidx.test.espresso.IdlingRegistry
-import com.google.firebase.auth.FirebaseAuth
 import com.mkalachova.trelloclone.firebase.FirebaseAuthClass
-import com.mkalachova.trelloclone.firebase.FirestoreClass
 import com.mkalachova.trelloclone.utils.EspressoIdlingResource
-import com.mkalachova.trelloclone.utils.SkipSignInTestRule
 import com.schibsted.spain.barista.rule.cleardata.ClearFilesRule
 import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
 import org.junit.After
@@ -31,7 +28,6 @@ open class BaseTest {
     var clearFilesRule = ClearFilesRule()
 
     fun skipSignIn(email: String, password: String) {
-//        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
         FirebaseAuthClass.authInstance.signInWithEmailAndPassword(email, password)
         //sleep for the duration of splash activity
         Thread.sleep(2000)

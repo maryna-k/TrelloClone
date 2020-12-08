@@ -134,7 +134,7 @@ class CreateBoardActivity : BaseActivity() {
             assignedUsersArrayList
         )
 
-        FirestoreClass().createBoard(this, board)
+        FirestoreClass.createBoard(this, board)
     }
 
     private fun uploadBoardImage() {

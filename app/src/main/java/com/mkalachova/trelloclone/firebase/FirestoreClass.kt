@@ -13,25 +13,25 @@ import com.mkalachova.trelloclone.models.User
 import com.mkalachova.trelloclone.utils.Constants
 import com.mkalachova.trelloclone.utils.EspressoIdlingResource
 
-class FirestoreClass {
+object FirestoreClass {
 
-    private var mFirestore : FirebaseFirestore
+    var firestoreInstance : FirebaseFirestore
 
     init {
-        mFirestore = FirebaseFirestore.getInstance()
-        if (!mFirestore.getFirestoreSettings().host.contains("10.0.2.2")) {
-            mFirestore.useEmulator("10.0.2.2", 8080)
+        firestoreInstance = FirebaseFirestore.getInstance()
+        if (!firestoreInstance.getFirestoreSettings().host.contains("10.0.2.2")) {
+            firestoreInstance.useEmulator("10.0.2.2", 8080)
             val settings = FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false)
                 .build()
-            mFirestore.firestoreSettings = settings
+            firestoreInstance.firestoreSettings = settings
         }
     }
 
     fun registerUser(activity: SignUpActivity, userInfo: User) {
         Log.i(this.javaClass.simpleName, "Method called : registerUser")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.USERS)
+        firestoreInstance.collection(Constants.USERS)
             .document(getCurrentUserId())
             .set(userInfo, SetOptions.merge())
             .addOnSuccessListener {
@@ -48,7 +48,7 @@ class FirestoreClass {
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
         Log.i(this.javaClass.simpleName, "Method called : updateUserProfileData")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.USERS)
+        firestoreInstance.collection(Constants.USERS)
             .document(getCurrentUserId())
             .update(userHashMap)
             .addOnSuccessListener {
@@ -81,7 +81,7 @@ class FirestoreClass {
     fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
         Log.i(this.javaClass.simpleName, "Method called : loadUserData")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.USERS)
+        firestoreInstance.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
             .addOnSuccessListener { document ->
@@ -133,7 +133,7 @@ class FirestoreClass {
     fun getBoardsList(activity: MainActivity) {
         Log.i(this.javaClass.simpleName, "Method called : getBoardsList")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.BOARDS)
+        firestoreInstance.collection(Constants.BOARDS)
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
             .get()
             .addOnSuccessListener { document ->
@@ -160,7 +160,7 @@ class FirestoreClass {
     fun createBoard(activity: CreateBoardActivity, boardInfo: Board) {
         Log.i(this.javaClass.simpleName, "Method called : createBoard")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.BOARDS)
+        firestoreInstance.collection(Constants.BOARDS)
             .document()
             .set(boardInfo, SetOptions.merge())
             .addOnSuccessListener {
@@ -181,7 +181,7 @@ class FirestoreClass {
     fun getBoardDetails(activity: TaskListActivity, boardDocumentId: String) {
         Log.i(this.javaClass.simpleName, "Method called : getBoardDetails")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.BOARDS)
+        firestoreInstance.collection(Constants.BOARDS)
             .document(boardDocumentId)
             .get()
             .addOnSuccessListener { document ->
@@ -206,7 +206,7 @@ class FirestoreClass {
         val taskListHashMap = HashMap<String, Any>()
         taskListHashMap[Constants.TASK_LIST] = board.taskList
 
-        mFirestore.collection((Constants.BOARDS))
+        firestoreInstance.collection((Constants.BOARDS))
             .document(board.documentId)
             .update(taskListHashMap)
             .addOnSuccessListener {
@@ -234,7 +234,7 @@ class FirestoreClass {
     fun getAssignedMembersListDetails(activity: Activity, assignedTo: ArrayList<String>) {
         Log.i(this.javaClass.simpleName, "Method called : getAssignedMembersListDetails")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.USERS)
+        firestoreInstance.collection(Constants.USERS)
             .whereIn(Constants.ID, assignedTo)
             .get()
             .addOnSuccessListener { document ->
@@ -269,7 +269,7 @@ class FirestoreClass {
     fun getMemberDetails(activity: MembersActivity, email: String) {
         Log.i(this.javaClass.simpleName, "Method called : getMemberDetails")
         EspressoIdlingResource.increment()
-        mFirestore.collection(Constants.USERS)
+        firestoreInstance.collection(Constants.USERS)
             .whereEqualTo(Constants.EMAIL, email)
             .get()
             .addOnSuccessListener { document ->
@@ -297,7 +297,7 @@ class FirestoreClass {
         val assignedToHashMap = HashMap<String, Any>()
         assignedToHashMap[Constants.ASSIGNED_TO] = board.assignedTo
 
-        mFirestore.collection(Constants.BOARDS)
+        firestoreInstance.collection(Constants.BOARDS)
             .document(board.documentId)
             .update(assignedToHashMap)
             .addOnSuccessListener {

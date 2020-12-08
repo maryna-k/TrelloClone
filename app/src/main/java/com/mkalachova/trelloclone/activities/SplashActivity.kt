@@ -32,7 +32,7 @@ class SplashActivity : BaseActivity() {
         tv_app_name.typeface = font
 
         Handler(Looper.getMainLooper()).postDelayed({
-            var currentUserId = FirestoreClass().getCurrentUserId()
+            var currentUserId = FirestoreClass.getCurrentUserId()
 
             if(currentUserId.isNotEmpty()) {
                 startActivity(Intent(this, MainActivity::class.java))

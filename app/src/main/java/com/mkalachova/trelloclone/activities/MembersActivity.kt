@@ -41,7 +41,7 @@ class MembersActivity : BaseActivity() {
         if(intent.hasExtra(Constants.BOARD_DETAIL)) {
             boardDetails = intent.getParcelableExtra(Constants.BOARD_DETAIL)!!
             showProgressDialog(resources.getString(R.string.please_wait))
-            FirestoreClass().getAssignedMembersListDetails(this, boardDetails.assignedTo)
+            FirestoreClass.getAssignedMembersListDetails(this, boardDetails.assignedTo)
         }
 
         setupActionBar()
@@ -95,7 +95,7 @@ class MembersActivity : BaseActivity() {
 
     fun memberDetails(user: User) {
         boardDetails.assignedTo.add(user.id)
-        FirestoreClass().assignMemberToBoard(this, boardDetails, user)
+        FirestoreClass.assignMemberToBoard(this, boardDetails, user)
     }
 
     fun memberAssignSuccess(user: User) {
@@ -115,7 +115,7 @@ class MembersActivity : BaseActivity() {
             if(email.isNotEmpty()) {
                 dialog.dismiss()
                 showProgressDialog(resources.getString(R.string.please_wait))
-                FirestoreClass().getMemberDetails(this, email)
+                FirestoreClass.getMemberDetails(this, email)
             } else {
                 Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
             }

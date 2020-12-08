@@ -52,7 +52,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
         if(tokenUpdated) {
             showProgressDialog(resources.getString(R.string.please_wait))
-            FirestoreClass().loadUserData(this, true)
+            FirestoreClass.loadUserData(this, true)
         } else {
             FirebaseInstallations.getInstance().getToken(false).addOnSuccessListener(this) {
                 instanceIdResult ->
@@ -106,9 +106,9 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE) {
-            FirestoreClass().loadUserData(this)
+            FirestoreClass.loadUserData(this)
         } else if(resultCode == Activity.RESULT_OK && requestCode == CREATE_BOARD_REQUEST_CODE) {
-            FirestoreClass().getBoardsList(this)
+            FirestoreClass.getBoardsList(this)
             hideProgressDialog()
         } else {
             Log.e("onActivityResult", "Cancelled")
@@ -157,7 +157,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
 
         if(readBoardsList) {
             showProgressDialog(resources.getString(R.string.please_wait))
-            FirestoreClass().getBoardsList(this)
+            FirestoreClass.getBoardsList(this)
             hideProgressDialog()
         }
         EspressoIdlingResource.decrement()
@@ -199,7 +199,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         editor.putBoolean(Constants.FCM_TOKEN_UPDATED, true)
         editor.apply()
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().loadUserData(this, true)
+        FirestoreClass.loadUserData(this, true)
         Log.i(this.javaClass.simpleName, "Method called : tokenUpdateSuccess")
     }
 
@@ -208,7 +208,7 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         val userHashMap = HashMap<String, Any>()
         userHashMap[Constants.FCM_TOKEN] = token
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().updateUserProfileData(this, userHashMap)
+        FirestoreClass.updateUserProfileData(this, userHashMap)
         Log.i(this.javaClass.simpleName, "Method called : updateFCMToken")
     }
 }

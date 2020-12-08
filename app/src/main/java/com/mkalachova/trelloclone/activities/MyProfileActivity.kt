@@ -33,7 +33,7 @@ class MyProfileActivity : BaseActivity() {
 
         setupActionBar()
 
-        FirestoreClass().loadUserData(this)
+        FirestoreClass.loadUserData(this)
 
         iv_profile_user_image.setOnClickListener {
             if(ContextCompat.checkSelfPermission(
@@ -146,7 +146,7 @@ class MyProfileActivity : BaseActivity() {
         }
 
         if(changesMade) {
-            FirestoreClass().updateUserProfileData(this, userHashMap)
+            FirestoreClass.updateUserProfileData(this, userHashMap)
         }
         EspressoIdlingResource.decrement()
     }

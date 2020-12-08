@@ -7,19 +7,40 @@ import com.mkalachova.trelloclone.activities.SplashActivity
 import com.mkalachova.trelloclone.robots.home
 import com.mkalachova.trelloclone.robots.join
 import com.mkalachova.trelloclone.robots.signIn
-import org.junit.Rule
-import org.junit.Test
+import com.mkalachova.trelloclone.utils.TestData
+import kotlinx.coroutines.runBlocking
+import org.junit.*
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
+import java.lang.System.currentTimeMillis
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class LoginTest : BaseTest() {
 
-    private val validEmail = "fred@email.com"
-    private val password = "temptemp"
+    companion object {
+        private val time = currentTimeMillis()
+        private val name = "Fred$time"
+        private val validEmail = "fred$time@email.com"
+        private val password = "temptemp"
+        private val data = TestData()
 
-    @get: Rule
+        @BeforeClass @JvmStatic
+        fun dataSetup() {
+            runBlocking {
+                data.createUserWithEmailAndPassword(name, validEmail, password)
+                Thread.sleep(5000)
+                data.createBoard("Board", validEmail)
+                Thread.sleep(5000)
+            }
+        }
+    }
+
+    @After
+    fun cleanUp() {
+        data.deleteUsers()
+    }
+
     var activityTestRule = ActivityScenarioRule(SplashActivity::class.java)
 
     @get: Rule
@@ -28,7 +49,7 @@ class LoginTest : BaseTest() {
         .around(activityTestRule)
 
     @Test
-    fun verifyLogin() {
+    fun testLogin() {
         join {
             waitForIntroScreen()
             tapSignInBtn()

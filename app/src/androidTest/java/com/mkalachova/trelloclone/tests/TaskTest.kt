@@ -7,13 +7,15 @@ import com.mkalachova.trelloclone.activities.SplashActivity
 import com.mkalachova.trelloclone.robots.*
 import com.mkalachova.trelloclone.utils.TestData
 import kotlinx.coroutines.runBlocking
-import org.junit.*
+import org.junit.BeforeClass
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class BoardTest : BaseTest() {
+class TaskTest : BaseTest() {
 
     companion object {
         private val time = System.currentTimeMillis()
@@ -24,9 +26,11 @@ class BoardTest : BaseTest() {
         private val email2 = "jess$time@email.com"
 
         private val password = "temptemp"
-        private val boardNameNoSetup = "Camping"
-        private val boardNameNoMembers = "Christmas Party$time"
         private val boardNameWithMember = "Bucketlist$time"
+        private val boardNameNoMember = "Travel$time"
+
+        val listName = "Food"
+        val cardName = "Turkey"
 
         private val data = TestData()
 
@@ -37,8 +41,8 @@ class BoardTest : BaseTest() {
                 data.createUserWithEmailAndPassword(userName1, email1, password, false)
                 data.createUserWithEmailAndPassword(userName2, email2, password, false)
                 Thread.sleep(5000)
-                data.createBoard(boardNameNoMembers, email1)
                 data.createBoard(boardNameWithMember, email1, email2)
+                data.createBoard(boardNameNoMember, email1)
             }
         }
     }
@@ -52,49 +56,73 @@ class BoardTest : BaseTest() {
         .around(activityTestRule)
 
     @Test
-    fun testCreateBoard() {
+    fun testCreateListWithTask() {
         skipSignIn(email1, password)
 
         home {
-            sleep(3000)
-            openCreateBoard()
+            selectBoard(boardNameNoMember)
         }
-        createBoard {
-            enterBoardName(boardNameNoSetup)
-            tapCreateButton()
-        }
-        home {
-            boardIsDisplayed(boardNameNoSetup, userName1)
+        board {
+            addList(listName)
+            listIsDisplayed(listName)
+            addCard(listName, cardName)
+
+            cardIsDisplayed(cardName, listName)
         }
     }
 
     @Test
-    fun testAddUserToBoard() {
+    fun testDeleteTaskList() {
         skipSignIn(email1, password)
 
         home {
-            sleep()
-            selectBoard(boardNameNoMembers)
+            selectBoard(boardNameNoMember)
         }
         board {
-            tapToOpenMembers()
+            addList(listName)
+            addCard(listName, cardName)
 
+            deleteTaskList(listName)
+
+            alertPopUpHasCorrectMessage(listName)
+            acceptDeletePopup()
+
+            listDoesNotExist(listName)
+        }
+    }
+
+    @Test
+    fun testAssignTaskToUser() {
+
+        skipSignIn(email1, password)
+
+        home {
+            selectBoard(boardNameNoMember)
+        }
+        board {
+            addList(listName)
+            addCard(listName, cardName)
+            tapToOpenMembers()
         }
         members {
             openSearchMember()
             enterMemberEmail(email2)
             tapAddMember()
-
-            memberIsDisplayed(email2, userName2)
+            tapReturn()
         }
-    }
+         board {
+            tapToOpenCardDetails(listName, cardName)
+        }
+        cardDetails {
+            tapToOpenMembersList()
+            tapToAssignMember(userName2, email2)
 
-    @Test
-    fun testAssignedBoardIsDisplayed() {
-        skipSignIn(email2, password)
+            assignedMemberIsDisplayed(email2)
 
-        home {
-            boardIsDisplayed(boardNameWithMember, userName1)
+            tapUpdateButton()
+        }
+        board {
+            assignedMemberIsDisplayed(email2)
         }
     }
 }

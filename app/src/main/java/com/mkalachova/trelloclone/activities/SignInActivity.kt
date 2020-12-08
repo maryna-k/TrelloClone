@@ -41,7 +41,6 @@ class SignInActivity : BaseActivity() {
             val password = et_password_signin.text.toString()
 
             if(validateForm(email, password)) {
-//                auth = FirebaseAuth.getInstance()
                 auth = FirebaseAuthClass.authInstance
                 signIn(email, password)
             }

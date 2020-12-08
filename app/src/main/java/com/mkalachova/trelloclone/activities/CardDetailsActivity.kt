@@ -145,7 +145,7 @@ class CardDetailsActivity : BaseActivity() {
         boardDetails.taskList[taskListPosition].cards[cardPosition] = card
 
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().addUpdateTaskList(this, boardDetails)
+        FirestoreClass.addUpdateTaskList(this, boardDetails)
     }
 
     private fun deleteCard() {
@@ -157,7 +157,7 @@ class CardDetailsActivity : BaseActivity() {
         taskList[taskListPosition].cards = cardsList
 
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().addUpdateTaskList(this, boardDetails)
+        FirestoreClass.addUpdateTaskList(this, boardDetails)
     }
 
     private fun alertDialogForDeleteCard(cardName: String) {

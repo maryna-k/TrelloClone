@@ -7,6 +7,8 @@ import com.mkalachova.trelloclone.activities.SplashActivity
 import com.mkalachova.trelloclone.robots.home
 import com.mkalachova.trelloclone.robots.join
 import com.mkalachova.trelloclone.robots.signUp
+import com.mkalachova.trelloclone.utils.TestData
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -16,9 +18,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class RegisterUserTest : BaseTest() {
 
-    private val validEmail = "ann@email.com"
+    val time = System.currentTimeMillis()
+    val name = "Fred$time"
+    val email = "fred$time@email.com"
     private val password = "temptemp"
-    private val name = "Ann"
 
     @get: Rule
     var activityTestRule = ActivityScenarioRule(SplashActivity::class.java)
@@ -28,15 +31,20 @@ class RegisterUserTest : BaseTest() {
         .around(clearFilesRule)
         .around(activityTestRule)
 
+    @After
+    fun cleanUp() {
+        TestData().deleteUsers()
+    }
+
     @Test
-    fun verifyUserRegistration() {
+    fun testUserRegistration() {
         join {
             waitForIntroScreen()
             tapSignUpBtn()
         }
         signUp {
             enterName(name)
-            enterEmail(validEmail)
+            enterEmail(email)
             enterPassword(password)
             tapSignUpButton()
         }
