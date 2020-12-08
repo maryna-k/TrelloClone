@@ -78,7 +78,6 @@ class BoardTest : BaseTest() {
         }
         board {
             tapToOpenMembers()
-
         }
         members {
             openSearchMember()

@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.mkalachova.trelloclone.activities.SplashActivity
 import com.mkalachova.trelloclone.robots.*
 import com.mkalachova.trelloclone.utils.TestData
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.BeforeClass
 import org.junit.Rule
@@ -88,6 +89,32 @@ class TaskTest : BaseTest() {
             acceptDeletePopup()
 
             listDoesNotExist(listName)
+        }
+    }
+
+    @Test
+    fun testAddDueDate() {
+        skipSignIn(email1, password)
+
+        home {
+            selectBoard(boardNameNoMember)
+        }
+        board {
+            addList(listName)
+            addCard(listName, cardName)
+            tapToOpenCardDetails(listName, cardName)
+        }
+        cardDetails {
+            tapSelectDate()
+            selectDate(10, 10, 2030)
+            tapOkOnCalendar()
+            tapUpdateButton()
+        }
+        board {
+            tapToOpenCardDetails(listName, cardName)
+        }
+        cardDetails {
+            assertEquals(getDisplayedDueDate(), "10/10/2030")
         }
     }
 

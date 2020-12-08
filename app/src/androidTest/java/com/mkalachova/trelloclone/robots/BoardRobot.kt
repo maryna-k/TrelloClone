@@ -2,15 +2,10 @@ package com.mkalachova.trelloclone.robots
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.mkalachova.trelloclone.R
-import com.mkalachova.trelloclone.utils.RecyclerViewHasChildMatcher
-import com.mkalachova.trelloclone.utils.RecyclerViewHasChildMatcher.Companion.recyclerHasChild
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 

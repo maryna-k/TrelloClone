@@ -1,9 +1,7 @@
 package com.mkalachova.trelloclone.robots
 
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.mkalachova.trelloclone.R
-import org.hamcrest.CoreMatchers
 
 fun createBoard(createBoardFunction: CreateBoardRobot.() -> Unit) = CreateBoardRobot().apply { createBoardFunction() }
 

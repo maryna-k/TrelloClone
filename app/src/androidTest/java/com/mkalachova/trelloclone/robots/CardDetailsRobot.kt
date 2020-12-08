@@ -1,9 +1,10 @@
 package com.mkalachova.trelloclone.robots
 
-
+import android.widget.DatePicker
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.mkalachova.trelloclone.R
@@ -21,6 +22,8 @@ class CardDetailsRobot : BaseRobot() {
     private val memberEmail = withId(R.id.tv_member_email)
     private val memberName = withId(R.id.tv_member_name)
     private val memberSelected = withId(R.id.iv_selected_member)
+    private val selectDateBtn = withId(R.id.tv_select_due_date)
+    private val calendarBtnOk = withText("OK")
 
     fun tapToOpenMembersList() = tapBy(openAssignDialogBtn)
 
@@ -35,9 +38,18 @@ class CardDetailsRobot : BaseRobot() {
     fun assignedMemberIsDisplayed(email: String) =
         displayed(allOf(assignedMember, withContentDescription(email)))
 
+    fun tapSelectDate() = tapBy(selectDateBtn)
+
+    fun selectDate(day: Int, month: Int, year: Int) =
+        onView(isAssignableFrom(DatePicker::class.java))
+            .perform(PickerActions.setDate(year, month, day))
+
+    fun tapOkOnCalendar() = tapBy(calendarBtnOk)
+
+    fun getDisplayedDueDate() = getElementText(selectDateBtn)
+
     fun tapUpdateButton() {
         closeKeyboard(updateBtn)
         tapBy(updateBtn)
     }
-
 }

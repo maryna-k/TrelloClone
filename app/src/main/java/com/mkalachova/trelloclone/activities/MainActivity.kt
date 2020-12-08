@@ -69,7 +69,6 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
     }
 
     private fun setupActionBar() {
-        Log.i(this.javaClass.simpleName, "Method called : setupActionBar")
         setSupportActionBar(toolbar_main_activity)
 
         toolbar_main_activity.setNavigationIcon(R.drawable.ic_action_navigation_menu)
@@ -77,31 +76,25 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         toolbar_main_activity.setNavigationOnClickListener {
             toggleDrawer()
         }
-        Log.i(this.javaClass.simpleName, "Method called : setupActionBar")
     }
 
     private fun toggleDrawer() {
-        Log.i(this.javaClass.simpleName, "Method called : toggleDrawer")
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             drawer_layout.openDrawer(GravityCompat.START)
         }
-        Log.i(this.javaClass.simpleName, "Method called : toggleDrawer")
     }
 
     override fun onBackPressed() {
-        Log.i(this.javaClass.simpleName, "Method called : onBackPressed")
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
             doubleBackToExit()
         }
-        Log.i(this.javaClass.simpleName, "Method called : onBackPressed")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
         EspressoIdlingResource.increment()
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -113,12 +106,10 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
         } else {
             Log.e("onActivityResult", "Cancelled")
         }
-        Log.i(this.javaClass.simpleName, "Method called : onActivityResult")
         EspressoIdlingResource.decrement()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Log.i(this.javaClass.simpleName, "Method called : onNavigationItemSelected")
         when(item.itemId) {
             R.id.nav_my_profile -> {
                 startActivityForResult(Intent(this, MyProfileActivity::class.java),
@@ -136,12 +127,10 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
-        Log.i(this.javaClass.simpleName, "Method called : onNavigationItemSelected")
         return true
     }
 
     fun updateNavigationUserDetails(user: User, readBoardsList: Boolean) {
-        Log.i(this.javaClass.simpleName, "Method called : updateNavigationUserDetails")
         EspressoIdlingResource.increment()
         hideProgressDialog()
 
@@ -161,11 +150,9 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             hideProgressDialog()
         }
         EspressoIdlingResource.decrement()
-        Log.i(this.javaClass.simpleName, "Method called : updateNavigationUserDetails")
     }
 
     fun populateBoardsListToUI(boardList: ArrayList<Board>) {
-        Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
         EspressoIdlingResource.increment()
         if(boardList.size > 0) {
             rv_boards_list.visibility = View.VISIBLE
@@ -189,26 +176,21 @@ class MainActivity : BaseActivity(), OnNavigationItemSelectedListener {
             tv_no_boards_available.visibility = View.VISIBLE
         }
         EspressoIdlingResource.decrement()
-        Log.i(this.javaClass.simpleName, "Method called : populateBoardsListToUI")
     }
 
     fun tokenUpdateSuccess() {
-        Log.i(this.javaClass.simpleName, "Method called : tokenUpdateSuccess")
         hideProgressDialog()
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putBoolean(Constants.FCM_TOKEN_UPDATED, true)
         editor.apply()
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass.loadUserData(this, true)
-        Log.i(this.javaClass.simpleName, "Method called : tokenUpdateSuccess")
     }
 
     private fun updateFCMToken(token: String) {
-        Log.i(this.javaClass.simpleName, "Method called : updateFCMToken")
         val userHashMap = HashMap<String, Any>()
         userHashMap[Constants.FCM_TOKEN] = token
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass.updateUserProfileData(this, userHashMap)
-        Log.i(this.javaClass.simpleName, "Method called : updateFCMToken")
     }
 }

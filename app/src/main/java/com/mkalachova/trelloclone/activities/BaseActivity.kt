@@ -27,14 +27,12 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun showProgressDialog(text: String) {
-        Log.i("ProgressDialog", "show")
         mProgressDialog.setContentView(R.layout.dialog_progress)
         mProgressDialog.tv_progress_text.text = text
         mProgressDialog.show()
     }
 
     fun hideProgressDialog() {
-        Log.i("ProgressDialog", "hide")
         mProgressDialog.dismiss()
     }
 
