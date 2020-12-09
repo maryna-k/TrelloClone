@@ -32,5 +32,4 @@ open class BaseTest {
         //sleep for the duration of splash activity
         Thread.sleep(2000)
     }
-
 }
